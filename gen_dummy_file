@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rm -rvf dummy
+mkdir dummy
+for x in $(seq 10);
+do
+  dd if=/dev/zero  of=dummy/data"$x".txt bs=10m count=1
+done

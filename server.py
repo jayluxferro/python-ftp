@@ -11,7 +11,7 @@ from func import getHash
 # defs
 server_host = '0.0.0.0'
 server_port = 5000
-cwd = os.getcwd()
+cwd = './uploads/'
 
 def log(func, cmd):
         logmsg = time.strftime("%Y-%m-%d %H-%M-%S [-] " + func)
@@ -82,7 +82,10 @@ class Server(threading.Thread):
         directory_path = self.cwd + os.path.dirname(filename)
         print(directory_path)
         if not os.path.exists(directory_path):
-            os.makedirs(directory_path)
+            try:
+                os.makedirs(directory_path)
+            except:
+                pass
         pathname = self.cwd  + filename
         print(pathname)
         #print(filename)

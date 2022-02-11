@@ -69,3 +69,6 @@ fastlane/screenshots
 # ignore media files
 media/*
 assets/images/users/
+/tmp
+/dummy
+/uploads/*.txt

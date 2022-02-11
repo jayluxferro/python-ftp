@@ -6,6 +6,10 @@ import os
 import stat
 from hashlib import sha1
 
+
+def getFileSize(file_path):
+    return os.path.getsize(file_path)/(1024 * 1024)
+
 def getHash(binary_file): #sha1 digest
     return sha1(binary_file.read()).hexdigest()
 

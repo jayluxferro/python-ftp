@@ -5,12 +5,13 @@ import os
 import sys
 import glob
 from ftplib import FTP
-from func import fileProperty, getHash
+from func import fileProperty, getHash, getFileSize
 import hashlib
 import threading
-from time import sleep
+from time import sleep, time
 import queue
 import logger as lg
+import numpy as np
 
 # defns
 concurrent_connections = 1
@@ -18,9 +19,11 @@ directory_path = ''
 server_address = ''
 server_host = '127.0.0.1'
 server_port = 5000
-server_timeout = 10
+server_timeout = 1000
 q = queue.Queue()
 tasks = []
+block_sizes = []
+tx_duration = []
 
 def usage():
     print('Usage: {} [server_address] [directory_path] [concurrent_connections]'.format(os.path.basename(sys.argv[0])))
@@ -62,8 +65,12 @@ def upload_files(file_name):
     file = open(file_name, 'rb')
     file_hash = getHash(file)
     fp = FTP()
+    #fp.set_pasv(False)
+    block_sizes.append(getFileSize(file_name))
+    _start = time()
     fp.connect(host=server_host, port=server_port, timeout=server_timeout)
-    fp.storbinary(cmd='STOR '+ file_name + ';' + file_hash, fp=file, callback=upload_callback)
+    fp.storbinary(cmd='STOR '+ file_name + ';' + file_hash, fp=file)
+    tx_duration.append(time() - _start)
 
 def process_files(directory_path):
     global server_host, server_port, tasks
@@ -72,9 +79,9 @@ def process_files(directory_path):
         if os.path.isfile(file_name):
             tasks.append(file_name)
 
-def upload_callback(data):
-    print(data)
-
+def calculate_tx_speed():
+    global block_sizes, tx_duration
+    lg.header('[🏎] Speed (MB/s): {}'.format(np.sum(block_sizes)/((np.sum(tx_duration) / concurrent_connections))))
 
 def main():
     global directory_path, concurrent_connections, server_address, server_host, server_port
@@ -104,5 +111,6 @@ def main():
 
     stop_workers(workers)
 
+    calculate_tx_speed()
 if __name__ == '__main__':
     main()
