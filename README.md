@@ -16,7 +16,7 @@ python client.py [server_address] [directory] [concurrent_connections - default 
 ```
 
 #### Test Example
-1. Generate dummy data files
+1. Generate dummy data files [**Optional**]
 ```
 ./gen_dummy_file
 ```
