@@ -1,4 +1,6 @@
-### A Simple Python FTP Implementation (Just for Illustration)
+### A Simple Python FTP Implementation
+
+**NB:** Tested on macOS/Linux
 
 1. Install **dependencies** using `pip`.
 ```
@@ -25,3 +27,8 @@ python client.py [server_address] [directory] [concurrent_connections - default 
 ```
 python client.py 127.0.0.1:5000 dummy 3
 ```
+
+#### Scenario Test
+Concurrency Test: 1, 2, 4, 8
+
+

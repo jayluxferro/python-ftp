@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rm scenario_test.csv
+touch scenario_test.csv
+for x in 1 2 4 8;
+do
+  python client.py 127.0.0.1:5000 dummy $x;
+done

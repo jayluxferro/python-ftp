@@ -24,6 +24,7 @@ q = queue.Queue()
 tasks = []
 block_sizes = []
 tx_duration = []
+scenario_file = './scenario_test.csv'
 
 def usage():
     print('Usage: {} [server_address] [directory_path] [concurrent_connections]'.format(os.path.basename(sys.argv[0])))
@@ -79,9 +80,16 @@ def process_files(directory_path):
         if os.path.isfile(file_name):
             tasks.append(file_name)
 
+def log_scenario(speed, concurrent_connections):
+    global scenario_file
+    with open(scenario_file, 'a') as f:
+        f.write('{},{}\n'.format(speed, concurrent_connections))
+
 def calculate_tx_speed():
-    global block_sizes, tx_duration
-    lg.header('[🏎] Speed (MB/s): {}'.format(np.sum(block_sizes)/((np.sum(tx_duration) / concurrent_connections))))
+    global block_sizes, tx_duration, concurrent_connections
+    speed = np.sum(block_sizes)/((np.sum(tx_duration) / concurrent_connections))
+    lg.header('[🏎] Speed (MB/s): {}'.format(speed))
+    log_scenario(speed, concurrent_connections)
 
 def main():
     global directory_path, concurrent_connections, server_address, server_host, server_port
