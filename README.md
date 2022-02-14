@@ -1,11 +1,16 @@
 ### A Simple Python FTP Implementation (Just for Illustration)
 
-1. Start **Server** by running.
+1. Install **dependencies** using `pip`.
+```
+python -m pip install -r requirements.txt
+```
+
+2. Start **Server** by running.
 ```
 python server.py
 ```
 
-2. Client Usage<br/>
+3. Client Usage<br/>
 ```
 python client.py [server_address] [directory] [concurrent_connections - default is 1]
 ```

@@ -70,5 +70,5 @@ fastlane/screenshots
 media/*
 assets/images/users/
 /tmp
-/dummy
+#/dummy
 /uploads/*.txt
