@@ -1,6 +1,6 @@
 ### A Simple Python FTP Implementation
 
-**NB:** Tested on macOS/Linux
+**NB:** Tested on Linux
 
 1. Install **dependencies** using `pip`.
 ```
