@@ -23,7 +23,7 @@ server_timeout = 1000
 q = queue.Queue()
 tasks = []
 block_sizes = []
-tx_duration = []
+tx_duration = 0
 scenario_file = './scenario_test.csv'
 
 def usage():
@@ -63,15 +63,13 @@ def create_queue(task_items):
 
 def upload_files(file_name):
     lg.default('[🗂] Processing: {}'.format(file_name))
+    file_hash = getHash(file_name)
     file = open(file_name, 'rb')
-    file_hash = getHash(file)
     fp = FTP()
     #fp.set_pasv(False)
     block_sizes.append(getFileSize(file_name))
-    _start = time()
     fp.connect(host=server_host, port=server_port, timeout=server_timeout)
     fp.storbinary(cmd='STOR '+ file_name + ';' + file_hash, fp=file)
-    tx_duration.append(time() - _start)
 
 def process_files(directory_path):
     global server_host, server_port, tasks
@@ -86,13 +84,13 @@ def log_scenario(speed, concurrent_connections):
         f.write('{},{}\n'.format(speed, concurrent_connections))
 
 def calculate_tx_speed():
-    global block_sizes, tx_duration, concurrent_connections
-    speed = np.sum(block_sizes)/((np.sum(tx_duration) / concurrent_connections))
+    global block_sizes, tx_duration
+    speed = np.sum(block_sizes)/(tx_duration)
     lg.header('[🏎] Speed (MB/s): {}'.format(speed))
     log_scenario(speed, concurrent_connections)
 
 def main():
-    global directory_path, concurrent_connections, server_address, server_host, server_port
+    global directory_path, concurrent_connections, server_address, server_host, server_port, tx_duration
 
     # validate cli inputs
     if len(sys.argv) < 3:
@@ -111,6 +109,7 @@ def main():
     process_files(directory_path)
 
     # Start up workers
+    tx_duration = time()
     workers = start_workers(worker_pool=concurrent_connections)
     create_queue(tasks)
 
@@ -118,6 +117,7 @@ def main():
     q.join()
 
     stop_workers(workers)
+    tx_duration = time() - tx_duration
 
     calculate_tx_speed()
 if __name__ == '__main__':

@@ -10,12 +10,13 @@ from hashlib import sha1
 def getFileSize(file_path):
     return os.path.getsize(file_path)/(1024 * 1024)
 
-def getHash(binary_file): #sha1 digest
-    return sha1(binary_file.read()).hexdigest()
+def getHash(file_path): #sha1 digest
+    with open(file_path, 'rb') as f:
+         return sha1(f.read()).hexdigest()
 
 def fileProperty(filepath):
     """
-    return information from given file, like this "-rw-r--r-- 1 User Group 312 Aug 1 2014 filename"
+    return information from given file, like this "-rw-r--r-- 1 User Group 312 Feb 16 2021 filename"
     """
     st = os.stat(filepath)
     fileMessage = [ ]

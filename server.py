@@ -80,15 +80,13 @@ class Server(threading.Thread):
         filename = data[0]
         file_hash = data[1]
         directory_path = self.cwd + os.path.dirname(filename)
-        print(directory_path)
         if not os.path.exists(directory_path):
             try:
                 os.makedirs(directory_path)
             except:
                 pass
         pathname = self.cwd  + filename
-        print(pathname)
-        #print(filename)
+
         log('STOR', pathname)
         try:
             if self.mode == 'I':
@@ -105,14 +103,8 @@ class Server(threading.Thread):
             if not data: break
             file.write(data)
         file.close( )
-        self.stopDataSock( )
+        self.stopDataSock(pathname, file_hash)
         self.sendCommand('226 Transfer completed.\r\n')
-        _written_file = open(pathname, 'rb')
-
-        # checking file hash
-        if getHash(_written_file) != file_hash:
-            self.sendCommand('501 File integrity check failed.\r\n')
-            os.remove(pathname)
 
     def startDataSock(self):
         log('startDataSock', 'Opening a data channel')
@@ -127,7 +119,7 @@ class Server(threading.Thread):
         except socket.error as err:
             log('startDataSock', err)
 
-    def stopDataSock(self):
+    def stopDataSock(self, filepath, file_hash):
         log('stopDataSock', 'Closing a data channel')
         try:
             self.dataSock.close( )
@@ -135,6 +127,10 @@ class Server(threading.Thread):
                 self.serverSock.close( )
         except socket.error as err:
             log('stopDataSock', err)
+        if getHash(filepath) != file_hash:
+            self.sendCommand('501 File integrity check failed.\r\n')
+            os.remove(pathname)
+
 
     def sendCommand(self, cmd):
         self.commSock.send(cmd.encode('utf-8'))
