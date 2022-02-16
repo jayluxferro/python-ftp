@@ -18,7 +18,7 @@ python client.py [server_address] [directory] [concurrent_connections - default 
 ```
 
 #### Test Example
-1. Generate dummy data files [**Optional**]
+1. Generate dummy data files
 ```
 ./gen_dummy_file
 ```
@@ -27,8 +27,3 @@ python client.py [server_address] [directory] [concurrent_connections - default 
 ```
 python client.py 127.0.0.1:5000 dummy 3
 ```
-
-#### Scenario Test
-Concurrency Test: 1, 2, 4, 8
-
-
